@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="zh-CN" class="bg-[#07080B]">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07080B" />
+  <meta name="description" content="快看漫画沉浸式品牌概念站：撕开分镜，进入下一格。" />
+  <title>快看漫画｜撕开分镜，进入下一格</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%2307080B'/%3E%3Cpath d='M12 14h17v14L42 14h10L35 32l17 18H39L29 38v12H12z' fill='%23FFE600'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Noto Sans SC','sans-serif'], display: ['Space Grotesk','Noto Sans SC','sans-serif'] } } } };
+  </script>
+  <style>
+    :root{--ink:#07080B;--carbon:#111318;--yellow:#FFE600;--pink:#FF2EA6;--green:#78FF69;--paper:#F4F4F0;--muted:#92949C}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--ink);color:var(--paper);font-family:'Noto Sans SC',sans-serif;overflow-x:hidden}
+    ::selection{background:var(--yellow);color:var(--ink)}
+    .noise{position:fixed;inset:0;pointer-events:none;z-index:80;opacity:.045;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.75'/%3E%3C/svg%3E")}
+    .grid-bg{background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:64px 64px}
+    .panel-cut{clip-path:polygon(0 0,94% 0,100% 8%,100% 100%,7% 100%,0 92%)}
+    .outline-text{-webkit-text-stroke:1px rgba(244,244,240,.65);color:transparent}
+    .glow-yellow{box-shadow:0 0 0 1px rgba(255,230,0,.28),0 0 45px rgba(255,230,0,.16)}
+    .glitch{position:relative}.glitch::before,.glitch::after{content:attr(data-text);position:absolute;inset:0;pointer-events:none;opacity:0}.glitch:hover::before{opacity:.55;color:var(--pink);transform:translate(3px,-1px);clip-path:inset(0 0 55% 0)}.glitch:hover::after{opacity:.55;color:var(--green);transform:translate(-3px,1px);clip-path:inset(55% 0 0 0)}
+    #webgl{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+    .scanline{background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.18) 50%);background-size:100% 4px}
+    .hero-title{font-size:clamp(3.5rem,10.5vw,10.5rem);line-height:.83;letter-spacing:-.075em}
+    .magnetic{transition:transform .25s ease,box-shadow .25s ease;background:var(--yellow);color:var(--ink)}
+    .magnetic:hover{box-shadow:0 0 0 5px rgba(255,230,0,.09),0 0 45px rgba(255,230,0,.42)}
+    .nav-link{position:relative;color:rgba(244,244,240,.64);transition:color .25s ease}.nav-link::after{content:'';position:absolute;left:0;right:100%;bottom:-7px;height:2px;background:var(--yellow);transition:right .25s ease}.nav-link:hover,.nav-link.is-active{color:var(--paper)}.nav-link.is-active::after{right:0}
+    .hero-art{position:absolute;right:-3vw;bottom:-9vh;width:min(47vw,720px);height:min(86vh,920px);z-index:4;filter:drop-shadow(0 0 70px rgba(255,230,0,.12))}.hero-art::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--ink) 0%,transparent 28%),linear-gradient(0deg,var(--ink) 0%,transparent 24%);pointer-events:none}.hero-art img{width:100%;height:100%;object-fit:cover;object-position:62% 18%;clip-path:polygon(17% 0,100% 0,100% 87%,88% 100%,0 100%,8% 22%)}
+    .section-kicker{font-family:'Space Grotesk',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--yellow)}
+    .section-title{font-size:clamp(2.75rem,7vw,7.5rem);line-height:.88;letter-spacing:-.065em;font-weight:900}
+    .story-panel{position:absolute;inset:0;display:grid;align-items:center;opacity:0;visibility:hidden;transform:translateY(24px);transition:opacity .5s ease,transform .7s cubic-bezier(.2,.8,.2,1),visibility .5s}.story-panel.is-active{opacity:1;visibility:visible;transform:none}
+    .story-index{font-family:'Space Grotesk',sans-serif;font-size:clamp(7rem,19vw,18rem);font-weight:700;line-height:.7;letter-spacing:-.09em;color:rgba(255,255,255,.045)}
+    .story-progress{transform-origin:top;transform:scaleY(0)}
+    .story-panel .slash{width:clamp(70px,12vw,190px);height:10px;background:var(--yellow);transform:skewX(-28deg)}
+    .chapter-chip{display:inline-flex;align-items:center;gap:.65rem;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.035);padding:.65rem .85rem;font:600 .72rem 'Space Grotesk',sans-serif;letter-spacing:.16em;text-transform:uppercase;backdrop-filter:blur(12px)}
+    .chapter-chip::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--yellow);box-shadow:0 0 13px var(--yellow)}
+    .halftone{background-image:radial-gradient(circle,rgba(255,255,255,.22) 1px,transparent 1.4px);background-size:9px 9px}
+    .characters-section{min-height:340vh}.characters-sticky{position:sticky;top:0;height:100svh;overflow:hidden}.character-track{display:flex;width:max-content;gap:clamp(1rem,2vw,2rem);will-change:transform}.character-card{position:relative;width:min(72vw,520px);height:min(67vh,690px);overflow:hidden;border:1px solid rgba(255,255,255,.17);background:#111318;isolation:isolate;transform-style:preserve-3d;transition:border-color .28s ease,box-shadow .28s ease}.character-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(5,6,8,.98) 0%,rgba(5,6,8,.54) 36%,transparent 69%);z-index:1;pointer-events:none}.character-card:hover,.character-card:focus-within{border-color:var(--card-accent,var(--yellow));box-shadow:0 0 55px color-mix(in srgb,var(--card-accent,var(--yellow)) 18%,transparent)}.character-card img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.8,.2,1),filter .3s ease}.character-card:hover img{transform:scale(1.045);filter:saturate(1.12)}
+    .character-copy{position:absolute;inset:auto 0 0;z-index:2;padding:1.3rem 1.35rem 1.4rem;transform:translateZ(30px)}.character-code{font:700 .7rem 'Space Grotesk',sans-serif;letter-spacing:.25em;text-transform:uppercase;color:var(--card-accent,var(--yellow))}.character-name{font-size:clamp(2.4rem,5vw,4.5rem);line-height:.88;font-weight:900;letter-spacing:-.055em}.tag{display:inline-flex;border:1px solid rgba(255,255,255,.25);padding:.35rem .58rem;font:600 .69rem 'Space Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.78)}
+    .read-button{display:inline-flex;align-items:center;justify-content:space-between;width:100%;min-height:46px;border-top:1px solid rgba(255,255,255,.18);margin-top:.95rem;padding-top:.85rem;font-weight:700;transition:color .2s ease}.read-button:hover{color:var(--card-accent,var(--yellow))}
+    .stat-card{position:relative;min-height:330px;overflow:hidden;border:1px solid rgba(255,255,255,.13);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015));padding:1.5rem}.stat-card::before{content:'';position:absolute;width:180px;height:180px;border-radius:50%;right:-70px;top:-70px;background:var(--stat-color,var(--yellow));filter:blur(90px);opacity:.22}.stat-value{font-family:'Space Grotesk','Noto Sans SC',sans-serif;font-size:clamp(4rem,8vw,8.5rem);font-weight:700;line-height:.8;letter-spacing:-.08em}
+    .marquee{display:flex;width:max-content;animation:marquee 24s linear infinite}.marquee span{padding-right:2.5rem}.marquee-outline{-webkit-text-stroke:1px rgba(244,244,240,.45);color:transparent}@keyframes marquee{to{transform:translateX(-50%)}}
+    .portal-frame{position:relative;border:1px solid rgba(255,255,255,.14);background:linear-gradient(135deg,rgba(255,230,0,.06),rgba(255,255,255,.015));overflow:hidden}.portal-frame::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,230,0,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,230,0,.07) 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(90deg,transparent,black)}
+    #qrcode img,#qrcode canvas{display:block;width:164px!important;height:164px!important}.qr-shell{position:relative;padding:14px;background:white}.qr-shell::before,.qr-shell::after{content:'';position:absolute;width:26px;height:26px;border-color:var(--yellow)}.qr-shell::before{left:-7px;top:-7px;border-left:2px solid;border-top:2px solid}.qr-shell::after{right:-7px;bottom:-7px;border-right:2px solid;border-bottom:2px solid}
+    .social-pill{display:inline-flex;min-height:44px;align-items:center;gap:.55rem;border:1px solid rgba(255,255,255,.16);padding:.7rem 1rem;font:600 .78rem 'Space Grotesk','Noto Sans SC',sans-serif;letter-spacing:.1em;transition:border-color .2s,color .2s,background .2s}.social-pill:hover{border-color:var(--yellow);color:var(--yellow);background:rgba(255,230,0,.05)}
+    .reveal{opacity:0;transform:translateY(40px)}
+    .mobile-menu{transform:translateY(-110%);transition:transform .45s cubic-bezier(.2,.8,.2,1)}.mobile-menu.is-open{transform:none}
+    @media(max-width:767px){.hero-art{right:-37vw;bottom:-2vh;width:104vw;height:71vh;opacity:.5}.hero-art::after{background:linear-gradient(90deg,var(--ink) 0%,rgba(7,8,11,.68) 45%,transparent 90%),linear-gradient(0deg,var(--ink),transparent 33%)}.hero-title{font-size:clamp(3.25rem,18vw,6rem);max-width:95vw}.story-panel{padding-top:76px}.characters-section{min-height:auto}.characters-sticky{position:relative;height:auto;overflow:visible}.character-track{width:100%;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:1rem}.character-card{width:82vw;min-width:82vw;height:68vh;scroll-snap-align:center}.stat-card{min-height:250px}.section-title{font-size:clamp(3rem,15vw,5.5rem)}}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}.story-panel{transition:none}.character-track{transform:none!important}.reveal{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#07080B]/60 backdrop-blur-xl">
+    <div class="mx-auto flex h-[72px] max-w-[1600px] items-center justify-between px-5 md:px-10">
+      <a href="#top" class="flex items-center gap-3" aria-label="快看漫画首页">
+        <span class="grid h-9 w-9 place-items-center rounded-[10px] bg-[#FFE600] font-display text-xl font-black text-black">K</span>
+        <span class="font-black tracking-[-.04em]">快看漫画</span>
+      </a>
+      <nav class="hidden items-center gap-7 font-display text-sm font-semibold tracking-wider md:flex" aria-label="主导航">
+        <a class="nav-link" href="#story">世界观</a>
+        <a class="nav-link" href="#characters">角色档案</a>
+        <a class="nav-link" href="#ecosystem">创作宇宙</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <a href="#portal" class="panel-cut hidden border border-[#FFE600]/40 px-5 py-2.5 font-display text-sm font-bold text-[#FFE600] transition hover:bg-[#FFE600] hover:text-black sm:inline-flex">下载 APP ↗</a>
+        <button id="menuBtn" class="grid h-11 w-11 place-items-center border border-white/15 md:hidden" aria-expanded="false" aria-controls="mobileMenu" aria-label="打开菜单"><span class="text-xl">≡</span></button>
+      </div>
+    </div>
+  </header>
+  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-40 grid place-items-center bg-[#07080B]/95 pt-[72px] backdrop-blur-2xl md:hidden" aria-hidden="true">
+    <nav class="flex flex-col items-center gap-6 text-center font-black" aria-label="移动导航">
+      <a class="text-5xl tracking-[-.06em] hover:text-[#FFE600]" href="#story">世界观</a>
+      <a class="text-5xl tracking-[-.06em] hover:text-[#FF2EA6]" href="#characters">角色档案</a>
+      <a class="text-5xl tracking-[-.06em] hover:text-[#78FF69]" href="#ecosystem">创作宇宙</a>
+      <a class="mt-5 panel-cut bg-[#FFE600] px-7 py-4 text-lg text-black" href="#portal">下载 APP ↗</a>
+    </nav>
+  </div>
+
+  <main id="top">
+    <section class="hero grid-bg relative min-h-[100svh] overflow-hidden pt-[72px]">
+      <canvas id="webgl" aria-hidden="true"></canvas>
+      <div class="scanline absolute inset-0 opacity-25" aria-hidden="true"></div>
+      <figure class="hero-art" aria-hidden="true"><img src="assets/hero-street-courier.jpg" alt="" fetchpriority="high" /></figure>
+      <div class="absolute left-[7vw] top-[18vh] h-28 w-28 rounded-full bg-[#FF2EA6]/25 blur-3xl" aria-hidden="true"></div>
+      <div class="absolute bottom-[10vh] right-[10vw] h-44 w-44 rounded-full bg-[#78FF69]/15 blur-3xl" aria-hidden="true"></div>
+      <div class="relative z-10 mx-auto flex min-h-[calc(100svh-72px)] max-w-[1600px] flex-col justify-between px-5 pb-7 pt-10 md:px-10 md:pb-10 md:pt-16">
+        <div class="flex items-center justify-between border-t border-white/20 pt-3 font-display text-[12px] uppercase tracking-[.22em] text-white/55">
+          <span>// Kuaikan Universe / 2026</span><span class="hidden sm:block">Signal online <i class="ml-2 inline-block h-2 w-2 rounded-full bg-[#78FF69] shadow-[0_0_14px_#78FF69]"></i></span>
+        </div>
+        <div class="relative py-10">
+          <p class="hero-kicker mb-5 font-display text-sm font-bold uppercase tracking-[.34em] text-[#FFE600]">Scroll to break the frame</p>
+          <h1 class="hero-title glitch max-w-[1350px] font-black uppercase" data-text="撕开分镜 / 进入下一格">
+            <span class="block">撕开分镜</span><span class="block text-[#FFE600]">进入下一格</span>
+          </h1>
+          <p class="hero-copy mt-7 max-w-xl text-base leading-8 text-white/70 md:text-lg">快看漫画，让每一次上滑都通往新的宇宙。与新世代创作者一起，把想象力写进未来。</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#characters" class="magnetic panel-cut inline-flex min-h-12 items-center gap-4 px-6 py-3 font-bold">即刻启程 <span aria-hidden="true">↗</span></a>
+            <a href="#story" class="panel-cut inline-flex min-h-12 items-center gap-4 border border-white/25 bg-white/[.03] px-6 py-3 font-bold backdrop-blur transition hover:border-white/60 hover:bg-white/10">探索世界观 <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+        <div class="flex items-end justify-between border-b border-white/20 pb-3 font-display text-[12px] uppercase tracking-[.2em] text-white/45">
+          <span>Original comics · creator first</span><span>01 / 05</span>
+        </div>
+      </div>
+      <div class="absolute bottom-0 left-1/2 z-20 hidden h-16 w-px -translate-x-1/2 bg-gradient-to-b from-[#FFE600] to-transparent md:block" aria-hidden="true"></div>
+    </section>
+    <section id="story" class="relative min-h-[320vh] border-t border-white/10 bg-[#0B0C10]" aria-label="快看漫画发展叙事">
+      <div class="sticky top-0 h-[100svh] overflow-hidden">
+        <div class="absolute left-5 top-24 z-20 hidden h-[calc(100vh-8rem)] w-10 border-x border-white/10 md:block">
+          <div class="story-progress mx-auto h-full w-px bg-[#FFE600]"></div>
+          <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 font-display text-[10px] tracking-[.2em] text-white/45">03</span>
+        </div>
+
+        <article class="story-panel is-active bg-[#F4F4F0] text-[#07080B]" data-story="0">
+          <div class="mx-auto grid w-full max-w-[1500px] gap-8 px-5 pb-12 pt-28 md:grid-cols-[1.08fr_.92fr] md:px-20 md:pb-16">
+            <div class="flex flex-col justify-between border-y border-black/15 py-7 md:py-10">
+              <div>
+                <span class="font-display text-xs font-bold uppercase tracking-[.26em]">Chapter 001 · Vertical first</span>
+                <h2 class="mt-8 max-w-4xl text-[clamp(3.3rem,7.5vw,8.7rem)] font-black leading-[.88] tracking-[-.07em]">一屏一格，<br><span class="text-[#6357FF]">把手机竖起来。</span></h2>
+              </div>
+              <div class="mt-12 grid gap-6 sm:grid-cols-2">
+                <p class="max-w-sm text-base font-medium leading-8 text-black/68">从“条漫创新”出发，快看把阅读的节奏交还给手指。每次上滑，都是下一格的悬念。</p>
+                <p class="font-display text-sm uppercase leading-6 tracking-[.18em] text-black/45">Mobile native<br>One thumb narrative<br>Infinite panels</p>
+              </div>
+            </div>
+            <div class="relative hidden overflow-hidden border border-black/15 md:block">
+              <div class="story-index absolute -right-2 top-[14%] !text-black/[.06]">01</div>
+              <div class="absolute inset-x-[12%] top-[13%] h-[30%] rotate-[-4deg] border-2 border-black bg-[#FFE600] p-5 shadow-[18px_18px_0_#07080B]">
+                <p class="font-display text-xs font-bold uppercase tracking-[.2em]">Panel unlocked</p>
+                <p class="mt-5 text-5xl font-black leading-none tracking-[-.06em]">向下，<br>故事向前。</p>
+              </div>
+              <div class="halftone absolute bottom-[11%] left-[8%] h-[28%] w-[42%] border border-black/20"></div>
+              <div class="absolute bottom-[12%] right-[8%] grid h-[26%] w-[35%] place-items-center bg-[#07080B] text-[#F4F4F0]">
+                <span class="rotate-90 font-display text-xs font-bold tracking-[.3em]">SWIPE / READ / FEEL</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="story-panel bg-[#FFE600] text-[#07080B]" data-story="1">
+          <div class="mx-auto grid w-full max-w-[1500px] items-center gap-10 px-5 pb-12 pt-28 md:grid-cols-[.8fr_1.2fr] md:px-20">
+            <div class="relative hidden min-h-[63vh] border border-black/20 md:block">
+              <div class="story-index absolute left-0 top-[8%] !text-black/[.07]">02</div>
+              <div class="absolute left-[13%] top-[18%] h-44 w-44 rounded-full border-[22px] border-[#FF2EA6] shadow-[0_0_0_2px_#07080B,0_0_60px_rgba(255,46,166,.35)]"></div>
+              <div class="absolute bottom-[18%] right-[10%] w-[68%] -rotate-6 border-2 border-black bg-[#F4F4F0] p-6 shadow-[-16px_16px_0_#07080B]">
+                <span class="font-display text-xs font-bold uppercase tracking-[.22em]">New visual language</span>
+                <p class="mt-7 text-5xl font-black leading-[.9] tracking-[-.06em]">不是适配手机，<br>是为手机而生。</p>
+              </div>
+            </div>
+            <div>
+              <span class="font-display text-xs font-bold uppercase tracking-[.26em]">Chapter 002 · Story in motion</span>
+              <h2 class="mt-8 text-[clamp(3.4rem,8vw,9rem)] font-black leading-[.84] tracking-[-.075em]">让每一次<br><span class="text-[#FF2EA6]">上滑</span>，<br>都有心跳。</h2>
+              <div class="mt-10 flex items-start gap-5 border-t border-black/20 pt-6">
+                <span class="mt-2 h-3 w-3 shrink-0 rounded-full bg-black"></span>
+                <p class="max-w-xl text-base font-semibold leading-8 md:text-lg">短章节、强节奏、高情绪——条漫不只是新的排版方式，而是一种属于移动时代的叙事语言。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="story-panel grid-bg bg-[#07080B] text-[#F4F4F0]" data-story="2">
+          <div class="mx-auto grid w-full max-w-[1500px] gap-8 px-5 pb-12 pt-28 md:grid-cols-[1.18fr_.82fr] md:px-20">
+            <div class="relative z-10 flex flex-col justify-between">
+              <div>
+                <span class="section-kicker">Chapter 003 · Creator supernova</span>
+                <h2 class="mt-8 text-[clamp(3.2rem,7.6vw,8.7rem)] font-black leading-[.86] tracking-[-.07em]">下一颗<br><span class="text-[#78FF69]">超新星</span>，<br>正在连载。</h2>
+              </div>
+              <p class="mt-10 max-w-xl text-base leading-8 text-white/68 md:text-lg">从新人首发、编辑陪跑到 IP 长线开发，快看连接作者、作品与读者，让每一个原创世界找到自己的第一束光。</p>
+            </div>
+            <div class="relative min-h-[45vh] overflow-hidden border border-white/15 bg-white/[.025] md:min-h-[64vh]">
+              <div class="story-index absolute -right-3 top-[13%]">03</div>
+              <div class="absolute left-[11%] top-[14%] h-44 w-44 rounded-full bg-[#78FF69] blur-[85px]"></div>
+              <div class="absolute inset-x-[8%] bottom-[10%] border border-[#78FF69]/45 bg-[#0B0C10]/80 p-7 backdrop-blur-xl">
+                <div class="flex items-center justify-between font-display text-xs uppercase tracking-[.2em] text-[#78FF69]"><span>Creator signal</span><span>Online</span></div>
+                <div class="my-5 h-px bg-gradient-to-r from-[#78FF69] to-transparent"></div>
+                <p class="text-4xl font-black tracking-[-.055em] md:text-6xl">CREATE.<br>PUBLISH.<br>GO BEYOND.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <div class="absolute bottom-5 right-5 z-30 font-display text-[11px] uppercase tracking-[.23em] text-current mix-blend-difference md:right-10">Scroll narrative · <span id="storyCount">01</span> / 03</div>
+      </div>
+    </section>
+
+    <section id="characters" class="characters-section relative border-t border-white/10 bg-[#0A0B0F]">
+      <div class="characters-sticky">
+        <div class="pointer-events-none absolute inset-0 grid-bg opacity-55"></div>
+        <div class="relative z-10 mx-auto flex max-w-[1600px] items-end justify-between gap-6 px-5 pt-24 md:px-10 md:pt-28">
+          <div>
+            <p class="section-kicker">Character files / 角色档案</p>
+            <h2 class="mt-5 text-[clamp(2.8rem,7vw,7rem)] font-black leading-[.86] tracking-[-.07em]">人设已加载，<br><span class="outline-text">故事待解锁。</span></h2>
+          </div>
+          <p class="hidden max-w-[280px] border-l border-[#FFE600] pl-5 text-sm leading-6 text-white/55 lg:block">原创概念角色展示。横向穿越角色档案，悬浮卡片读取属性与高光台词。</p>
+        </div>
+
+        <div class="relative mt-10 md:absolute md:left-0 md:top-[32vh] md:mt-0">
+          <div class="character-track px-5 md:px-[10vw]">
+            <article class="character-card panel-cut" style="--card-accent:#FFE600" tabindex="0">
+              <img src="assets/hero-street-courier.jpg" alt="原创概念角色零号：穿过漫画分镜的街头信使" loading="lazy" />
+              <div class="character-copy">
+                <p class="character-code">FILE KKM-001 · Courier</p>
+                <div class="mt-2 flex items-end justify-between gap-4"><h3 class="character-name">零号<br><span class="text-[#FFE600]">ZERO</span></h3><span class="font-display text-xs tracking-[.2em] text-white/45">LV. 99</span></div>
+                <div class="mt-4 flex flex-wrap gap-2"><span class="tag">速度 S+</span><span class="tag">次元跃迁</span><span class="tag">自由意志</span></div>
+                <p class="mt-4 text-sm leading-6 text-white/70">“故事不是终点，是入口。”</p>
+                <a class="read-button" href="https://www.kuaikanmanhua.com/" target="_blank" rel="noreferrer">进入试读 <span>↗</span></a>
+              </div>
+            </article>
+
+            <article class="character-card panel-cut" style="--card-accent:#FF2EA6" tabindex="0">
+              <img src="assets/card-signal-hacker.jpg" alt="原创概念角色弦：操纵信号碎片的黑客" loading="lazy" />
+              <div class="character-copy">
+                <p class="character-code">FILE KKM-017 · Signal hacker</p>
+                <div class="mt-2 flex items-end justify-between gap-4"><h3 class="character-name">弦<br><span class="text-[#FF2EA6]">STRING</span></h3><span class="font-display text-xs tracking-[.2em] text-white/45">SYNC 87%</span></div>
+                <div class="mt-4 flex flex-wrap gap-2"><span class="tag">感知 S</span><span class="tag">信号解构</span><span class="tag">情报流</span></div>
+                <p class="mt-4 text-sm leading-6 text-white/70">“噪声里，也藏着答案。”</p>
+                <a class="read-button" href="https://www.kuaikanmanhua.com/" target="_blank" rel="noreferrer">进入试读 <span>↗</span></a>
+              </div>
+            </article>
+
+            <article class="character-card panel-cut" style="--card-accent:#78FF69" tabindex="0">
+              <img src="assets/card-biomech-fighter.jpg" alt="原创概念角色蚀：拥有生化机械手臂的战士" loading="lazy" />
+              <div class="character-copy">
+                <p class="character-code">FILE KKM-024 · Bio fighter</p>
+                <div class="mt-2 flex items-end justify-between gap-4"><h3 class="character-name">蚀<br><span class="text-[#78FF69]">ECLIPSE</span></h3><span class="font-display text-xs tracking-[.2em] text-white/45">CORE 92%</span></div>
+                <div class="mt-4 flex flex-wrap gap-2"><span class="tag">力量 S+</span><span class="tag">再生回路</span><span class="tag">零噪作战</span></div>
+                <p class="mt-4 text-sm leading-6 text-white/70">“安静，不代表没有风暴。”</p>
+                <a class="read-button" href="https://www.kuaikanmanhua.com/" target="_blank" rel="noreferrer">进入试读 <span>↗</span></a>
+              </div>
+            </article>
+
+            <div class="flex w-[60vw] max-w-[700px] shrink-0 items-center px-6 md:w-[42vw] md:px-14">
+              <div>
+                <p class="section-kicker">Next file is yours</p>
+                <p class="mt-5 text-[clamp(3rem,6.5vw,7rem)] font-black leading-[.86] tracking-[-.07em]">还有无数个<br>世界，<br><span class="text-[#FFE600]">正在更新。</span></p>
+                <a href="https://www.kuaikanmanhua.com/" target="_blank" rel="noreferrer" class="magnetic panel-cut mt-8 inline-flex min-h-12 items-center gap-6 px-6 py-3 font-bold">探索全部连载 <span>↗</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute bottom-5 left-5 hidden items-center gap-4 font-display text-[11px] uppercase tracking-[.22em] text-white/45 md:flex md:left-10"><span class="inline-block h-px w-16 bg-[#FFE600]"></span> Scroll to scan files</div>
+      </div>
+    </section>
+
+    <section id="ecosystem" class="relative overflow-hidden border-t border-white/10 bg-[#07080B] py-24 md:py-32">
+      <div class="marquee pointer-events-none mb-20 whitespace-nowrap font-display text-[clamp(4rem,10vw,10rem)] font-black uppercase leading-none tracking-[-.06em]" aria-hidden="true">
+        <span>Creators make worlds · <i class="not-italic text-[#FFE600]">快看让世界被看见</i> · </span><span>Creators make worlds · <i class="not-italic text-[#FFE600]">快看让世界被看见</i> · </span>
+      </div>
+      <div class="mx-auto max-w-[1600px] px-5 md:px-10">
+        <div class="reveal grid items-end gap-8 md:grid-cols-[1.15fr_.85fr]">
+          <div><p class="section-kicker">Ecosystem / 创作宇宙</p><h2 class="section-title mt-6">每个数字背后，<br>都是一个<span class="text-[#FFE600]">新世界。</span></h2></div>
+          <p class="max-w-xl text-base leading-8 text-white/60 md:pb-2 md:text-lg">从读者社区、创作者生态到全球发行，快看让好故事穿过屏幕，也穿过语言与地域。</p>
+        </div>
+        <div class="mt-14 grid gap-4 md:grid-cols-3 md:gap-5">
+          <article class="stat-card panel-cut reveal" style="--stat-color:#FFE600">
+            <div class="relative z-10 flex h-full flex-col justify-between">
+              <div class="flex items-center justify-between font-display text-xs uppercase tracking-[.2em] text-white/45"><span>Young community</span><span>01</span></div>
+              <div class="mt-20"><p class="stat-value text-[#FFE600]"><span class="counter" data-count="3.8">0</span>亿+</p><h3 class="mt-5 text-2xl font-black">年轻用户</h3><p class="mt-2 text-sm text-white/50">一起追更，也一起创造流行。</p></div>
+            </div>
+          </article>
+          <article class="stat-card panel-cut reveal" style="--stat-color:#FF2EA6">
+            <div class="relative z-10 flex h-full flex-col justify-between">
+              <div class="flex items-center justify-between font-display text-xs uppercase tracking-[.2em] text-white/45"><span>Creator network</span><span>02</span></div>
+              <div class="mt-20"><p class="stat-value text-[#FF2EA6]"><span class="counter" data-count="12">0</span>万+</p><h3 class="mt-5 text-2xl font-black">注册创作者</h3><p class="mt-2 text-sm text-white/50">从第一格，到被全世界看见。</p></div>
+            </div>
+          </article>
+          <article class="stat-card panel-cut reveal" style="--stat-color:#78FF69">
+            <div class="relative z-10 flex h-full flex-col justify-between">
+              <div class="flex items-center justify-between font-display text-xs uppercase tracking-[.2em] text-white/45"><span>Global distribution</span><span>03</span></div>
+              <div class="mt-20"><p class="stat-value text-[#78FF69]">近<span class="counter" data-count="200">0</span></p><h3 class="mt-5 text-2xl font-black">个国家和地区</h3><p class="mt-2 text-sm text-white/50">多语种内容，跨越次元与边界。</p></div>
+            </div>
+          </article>
+        </div>
+        <p class="mt-5 text-right text-xs leading-5 text-white/35">数据口径据快看 2026 年公开资料，仅用于本视觉概念页展示。<a class="underline transition hover:text-white/70" href="https://www.chinanews.com/cul/2026/08-21/10681684.shtml" target="_blank" rel="noreferrer">查看来源 ↗</a></p>
+      </div>
+    </section>
+
+    <section id="portal" class="border-t border-white/10 bg-[#0B0C10] px-5 py-24 md:px-10 md:py-32">
+      <div class="portal-frame panel-cut mx-auto max-w-[1600px] p-6 md:p-12 lg:p-16">
+        <div class="relative z-10 grid items-center gap-12 lg:grid-cols-[1.15fr_.85fr]">
+          <div class="reveal">
+            <p class="section-kicker">Portal / 入口已开启</p>
+            <h2 class="mt-7 text-[clamp(3.2rem,7.8vw,8.8rem)] font-black leading-[.84] tracking-[-.075em]">下一格，<br><span class="text-[#FFE600]">现在开画。</span></h2>
+            <p class="mt-8 max-w-xl text-base leading-8 text-white/62 md:text-lg">下载快看漫画，进入正在发生的故事。追更热门连载，发现原创作者，也让你的脑洞拥有第一位读者。</p>
+            <div class="mt-9 flex flex-wrap gap-3">
+              <a class="magnetic panel-cut inline-flex min-h-12 items-center gap-5 px-6 py-3 font-bold" href="https://www.kuaikanmanhua.com/webs/download" target="_blank" rel="noreferrer">立即下载 <span>↗</span></a>
+              <a class="panel-cut inline-flex min-h-12 items-center gap-5 border border-white/20 px-6 py-3 font-bold transition hover:border-[#FFE600] hover:text-[#FFE600]" href="https://www.kuaikanmanhua.com/" target="_blank" rel="noreferrer">访问官网 <span>↗</span></a>
+            </div>
+          </div>
+          <div class="reveal flex flex-col items-center justify-center border-t border-white/10 pt-10 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
+            <div class="qr-shell glow-yellow"><div id="qrcode" aria-label="快看漫画官方下载二维码"></div></div>
+            <p class="mt-6 font-display text-sm font-bold uppercase tracking-[.23em] text-[#FFE600]">Scan to enter</p>
+            <p class="mt-2 text-sm text-white/45">扫码前往快看漫画官方下载页</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 bg-[#07080B] px-5 py-9 md:px-10">
+    <div class="mx-auto flex max-w-[1600px] flex-col gap-7 md:flex-row md:items-end md:justify-between">
+      <div><div class="flex items-center gap-3"><span class="grid h-10 w-10 place-items-center rounded-[10px] bg-[#FFE600] font-display text-xl font-black text-black">K</span><span class="text-xl font-black">快看漫画</span></div><p class="mt-4 max-w-md text-sm leading-6 text-white/40">本页面为品牌视觉与交互概念提案，角色均为原创概念设定，不代表现有连载 IP。</p></div>
+      <div class="flex flex-wrap gap-2" aria-label="快看社交媒体矩阵">
+        <a class="social-pill" href="https://www.kuaikanmanhua.com/" target="_blank" rel="noreferrer">官网 ↗</a>
+        <a class="social-pill" href="https://apps.apple.com/cn/app/id906936224" target="_blank" rel="noreferrer">APP STORE ↗</a>
+        <a class="social-pill" href="https://www.kuaikanmanhua.com/webs/download" target="_blank" rel="noreferrer">ANDROID ↗</a>
+      </div>
+      <div class="font-display text-xs uppercase leading-6 tracking-[.17em] text-white/35">UNOFFICIAL CONCEPT · 2026<br>Made for the next panel</div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+  (()=>{
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(window.gsap){
+      gsap.from('.hero-kicker',{y:18,opacity:0,duration:.65,ease:'power3.out'});
+      gsap.from('.hero-title span',{y:100,opacity:0,rotate:2,duration:1.05,stagger:.12,ease:'power4.out'});
+      gsap.from('.hero-copy,.hero .magnetic',{y:26,opacity:0,duration:.8,stagger:.1,delay:.55,ease:'power3.out'});
+    }
+    document.querySelectorAll('.magnetic').forEach(el=>{
+      el.addEventListener('pointermove',e=>{if(reduce)return;const r=el.getBoundingClientRect();el.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.14}px,${(e.clientY-r.top-r.height/2)*.14}px)`});
+      el.addEventListener('pointerleave',()=>el.style.transform='');
+    });
+    if(!window.THREE || reduce) return;
+    const canvas=document.querySelector('#webgl'),scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,100);
+    camera.position.z=6;
+    const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);
+    const count=650,geo=new THREE.BufferGeometry(),pos=new Float32Array(count*3),color=new Float32Array(count*3),palette=[new THREE.Color('#FFE600'),new THREE.Color('#FF2EA6'),new THREE.Color('#78FF69'),new THREE.Color('#F4F4F0')];
+    for(let i=0;i<count;i++){pos[i*3]=(Math.random()-.5)*14;pos[i*3+1]=(Math.random()-.5)*9;pos[i*3+2]=(Math.random()-.5)*7;const c=palette[Math.random()<.72?3:Math.floor(Math.random()*3)];color.set([c.r,c.g,c.b],i*3)}
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(color,3));
+    const mat=new THREE.PointsMaterial({size:.026,vertexColors:true,transparent:true,opacity:.72});const points=new THREE.Points(geo,mat);scene.add(points);
+    let mx=0,my=0;addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5},{passive:true});
+    function tick(t){points.rotation.y=t*.000035+mx*.13;points.rotation.x=my*.08;renderer.render(scene,camera);requestAnimationFrame(tick)}requestAnimationFrame(tick);
+    addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)},{passive:true});
+  })();
+  </script>
+  <script>
+  (()=>{
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const menuBtn = document.querySelector('#menuBtn');
+    const mobileMenu = document.querySelector('#mobileMenu');
+    const closeMenu = () => {
+      mobileMenu.classList.remove('is-open');
+      mobileMenu.setAttribute('aria-hidden','true');
+      menuBtn.setAttribute('aria-expanded','false');
+      menuBtn.querySelector('span').textContent='≡';
+    };
+    menuBtn?.addEventListener('click',()=>{
+      const open = !mobileMenu.classList.contains('is-open');
+      mobileMenu.classList.toggle('is-open',open);
+      mobileMenu.setAttribute('aria-hidden',String(!open));
+      menuBtn.setAttribute('aria-expanded',String(open));
+      menuBtn.querySelector('span').textContent=open?'×':'≡';
+    });
+    mobileMenu?.querySelectorAll('a').forEach(link=>link.addEventListener('click',closeMenu));
+
+    const navLinks=[...document.querySelectorAll('.nav-link')];
+    const sections=['story','characters','ecosystem'].map(id=>document.getElementById(id));
+    const sectionObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      if(!entry.isIntersecting)return;
+      navLinks.forEach(link=>link.classList.toggle('is-active',link.getAttribute('href')===`#${entry.target.id}`));
+    }),{rootMargin:'-42% 0px -48% 0px'});
+    sections.forEach(section=>section&&sectionObserver.observe(section));
+
+    if(window.QRCode){
+      new QRCode(document.getElementById('qrcode'),{text:'https://www.kuaikanmanhua.com/webs/download',width:164,height:164,colorDark:'#07080B',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.H});
+    }else{
+      document.getElementById('qrcode').innerHTML='<div style="width:164px;height:164px;display:grid;place-items:center;color:#07080B;font:700 12px Space Grotesk,sans-serif;text-align:center;padding:16px">KUAIKAN<br>DOWNLOAD</div>';
+    }
+
+    document.querySelectorAll('.character-card').forEach(card=>{
+      card.addEventListener('pointermove',e=>{
+        if(reduce || innerWidth<768)return;
+        const r=card.getBoundingClientRect();
+        const rx=((e.clientY-r.top)/r.height-.5)*-6;
+        const ry=((e.clientX-r.left)/r.width-.5)*6;
+        card.style.transform=`perspective(1100px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      });
+      card.addEventListener('pointerleave',()=>card.style.transform='');
+    });
+
+    if(!window.gsap || !window.ScrollTrigger){
+      const story=document.getElementById('story');
+      story.style.minHeight='auto';
+      story.querySelector('.sticky').style.position='relative';
+      story.querySelector('.sticky').style.height='auto';
+      story.querySelectorAll('.story-panel').forEach(panel=>{panel.style.position='relative';panel.style.minHeight='100svh';panel.style.opacity='1';panel.style.visibility='visible';panel.style.transform='none'});
+      document.querySelectorAll('.reveal').forEach(el=>{el.style.opacity='1';el.style.transform='none'});
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    if(!reduce){
+      gsap.to('.hero-art',{yPercent:14,scale:.96,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1}});
+      gsap.to('.hero-title',{yPercent:-10,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1}});
+    }
+
+    const storyPanels=[...document.querySelectorAll('.story-panel')];
+    let activeStory=0;
+    ScrollTrigger.create({
+      trigger:'#story',start:'top top',end:'bottom bottom',
+      onUpdate:self=>{
+        gsap.set('.story-progress',{scaleY:self.progress});
+        const next=Math.min(storyPanels.length-1,Math.floor(self.progress*storyPanels.length));
+        if(next===activeStory)return;
+        activeStory=next;
+        storyPanels.forEach((panel,index)=>panel.classList.toggle('is-active',index===next));
+        document.getElementById('storyCount').textContent=String(next+1).padStart(2,'0');
+      }
+    });
+
+    const characterSection=document.getElementById('characters');
+    const characterTrack=document.querySelector('.character-track');
+    if(!reduce){
+      ScrollTrigger.matchMedia({
+        '(min-width: 768px)':()=>ScrollTrigger.create({
+          trigger:characterSection,start:'top top',end:'bottom bottom',invalidateOnRefresh:true,
+          onUpdate:self=>{
+            const distance=Math.max(0,characterTrack.scrollWidth-innerWidth+innerWidth*.04);
+            gsap.set(characterTrack,{x:-distance*self.progress});
+          }
+        })
+      });
+    }
+
+    gsap.utils.toArray('.reveal').forEach(el=>gsap.to(el,{opacity:1,y:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 86%',once:true}}));
+    document.querySelectorAll('.counter').forEach(el=>{
+      const end=Number(el.dataset.count),state={value:0};
+      ScrollTrigger.create({trigger:el,start:'top 88%',once:true,onEnter:()=>gsap.to(state,{value:end,duration:1.5,ease:'power3.out',onUpdate:()=>{el.textContent=Number.isInteger(end)?Math.round(state.value):state.value.toFixed(1)}})});
+    });
+    document.fonts?.ready.then(()=>ScrollTrigger.refresh());
+  })();
+  </script>
+  <noscript><style>#story{min-height:auto!important}#story>.sticky{position:relative!important;height:auto!important}.story-panel{position:relative!important;min-height:100svh;opacity:1!important;visibility:visible!important;transform:none!important}.reveal{opacity:1!important;transform:none!important}</style></noscript>
+</body>
+</html>
